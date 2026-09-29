@@ -1,0 +1,8 @@
+# Tiny experiment for the smoke test and for a first look at MLflow.
+name: smoke
+n_samples: 64
+n_features: 4
+noise: 0.1
+stage: baseline
+dataset: synthetic
+model_family: least-squares

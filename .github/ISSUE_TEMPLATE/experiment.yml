@@ -1,0 +1,25 @@
+name: Experiment
+description: One hypothesis, one issue
+title: "exp: "
+# projects: ["<owner>/<board number>"]   # uncomment with your GitHub Project to add every experiment to the board
+body:
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Hypothesis
+    validations:
+      required: true
+  - type: textarea
+    id: setup
+    attributes:
+      label: Setup
+      description: Data, baseline, metric
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+  - type: textarea
+    id: result
+    attributes:
+      label: Outcome and interpretation
+      description: Filled in at closing

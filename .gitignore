@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# configuration and secrets
+.env
+.env.*
+!.env.example
+
+# data and experiment stores
+data/*
+!data/README.md
+mlflow.db
+mlruns/
+mlartifacts/
+
+# notebooks
+.ipynb_checkpoints/
+
+# personal agent files
+*.local.*
+CLAUDE.local.md
+.claude/settings.local.json
+
+# editors and OS
+.idea/
+.vscode/
+.DS_Store

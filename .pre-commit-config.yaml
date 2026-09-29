@@ -1,0 +1,21 @@
+# The same checks as CI and the agent hook. Install once per clone: uvx pre-commit install
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: [--maxkb=10240]
+      - id: check-yaml
+      - id: check-toml
+  - repo: local
+    hooks:
+      - id: make-check
+        name: make check
+        entry: make check
+        language: unsupported
+        pass_filenames: false

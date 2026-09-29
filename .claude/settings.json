@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "deny": ["Read(./.env)", "Read(./.env.local)"]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -z \"$(git status --porcelain)\" ] || make check >&2 || exit 2"
+          }
+        ]
+      }
+    ]
+  }
+}
