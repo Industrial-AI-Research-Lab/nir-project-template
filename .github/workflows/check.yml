@@ -1,0 +1,50 @@
+# On every pull request: the same `make check` as pre-commit and the agent hook, plus what a machine
+# checks better than a person: branch name, PR title, secrets, large files, the lock file.
+name: check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - run: make check
+
+  hygiene:
+    runs-on: ubuntu-latest
+    env:
+      SKIP: make-check,gitleaks
+    steps:
+      - uses: actions/checkout@v7
+      - name: gitleaks over the working tree
+        run: docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1 dir /repo --redact --no-banner
+      - uses: astral-sh/setup-uv@v10
+      - run: uvx pre-commit run --all-files --show-diff-on-failure
+
+  conventions:
+    runs-on: ubuntu-latest
+    env:
+      BRANCH: ${{ github.head_ref }}
+      TITLE: ${{ github.event.pull_request.title }}
+    steps:
+      - name: Branch name and PR title follow the type list
+        run: |
+          types='feat|fix|refactor|docs|test|chore|exp'
+          echo "$BRANCH" | grep -Eq "^($types)/[a-z0-9._-]+$" \
+            || { echo "::error::branch '$BRANCH' must be <type>/<short-description>, type in $types"; exit 1; }
+          echo "$TITLE" | grep -Eq "^($types)(\([a-z0-9._-]+\))?!?: .+" \
+            || { echo "::error::PR title '$TITLE' must start with '<type>: '"; exit 1; }
